@@ -17,7 +17,7 @@ int board[8][8] = {
 
 
 
-int what_next(int pos_x, int pos_y) {
+int what_next(int pos_x, int pos_y, int counter) {
     int vars[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
     for (int i = 0; i < 8; i++) {
         if (pos_x + steps[i][0] < 8 && pos_y + steps[i][1] < 8 && pos_x + steps[i][0] >= 0 && pos_y + steps[i][1] >= 0 && board[pos_y + steps[i][1]][pos_x + steps[i][0]] == 0) {
@@ -47,6 +47,10 @@ int what_next(int pos_x, int pos_y) {
             next_vars_min = next_vars[i];
             next_vars_min_ind = i;
         }
+        else if (vars[i] < next_vars_min && vars[i] != 0 && counter == 63) {
+            next_vars_min = vars[i];
+            next_vars_min_ind = i;
+        }
     }
     
     return next_vars_min_ind;
@@ -56,19 +60,11 @@ int what_next(int pos_x, int pos_y) {
 void show_board(int pos_x, int pos_y, int counter) {
     int ind;
     while (counter < 64) {
-        ind = what_next(pos_x, pos_y);
+        ind = what_next(pos_x, pos_y, counter);
         pos_x += steps[ind][0];
         pos_y += steps[ind][1];
         counter++;
         board[pos_y][pos_x] = counter;
-        system("cls");
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                cout.width(3);
-                cout << board[i][j];
-            }
-            cout << endl;
-        }
     }
 }
 
@@ -84,9 +80,16 @@ int main()
         cout << "Введите координату по Y: ";
         cin >> y0;
     }
-    
+    clock_t start, end;
     board[y0][x0] = counter;
     show_board(x0, y0, counter);
-    system("pause");
+    cout << endl;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            cout.width(4);
+            cout << board[i][j];
+        }
+        cout << endl;
+    }
     return 0;
 }
